@@ -11,10 +11,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
 @Getter
 @Setter
-
+@ToString(exclude = {"lignesCommande"})
 public class Commande {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

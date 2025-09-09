@@ -10,10 +10,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
 @Getter
 @Setter
-
+@ToString(exclude = {"lignesCommande"})
 public class Plat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

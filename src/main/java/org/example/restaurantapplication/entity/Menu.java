@@ -11,10 +11,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
 @Getter
 @Setter
-
+@ToString(exclude = {"plats"})
 public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

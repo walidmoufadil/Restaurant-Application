@@ -7,7 +7,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "clients")
-@NoArgsConstructor @AllArgsConstructor @Builder @ToString @Getter @Setter
+@NoArgsConstructor @AllArgsConstructor @Builder
+@Getter @Setter
+@ToString(exclude = {"commandes"})
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
