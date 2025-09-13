@@ -13,12 +13,13 @@ import org.example.restaurantapplication.repository.PlatRepository;
 import org.example.restaurantapplication.service.LigneCommandeService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Propagation;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 @RequiredArgsConstructor
 public class LigneCommandeServiceImpl implements LigneCommandeService {
 

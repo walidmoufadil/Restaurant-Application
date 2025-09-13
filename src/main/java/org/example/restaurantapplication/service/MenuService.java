@@ -13,4 +13,5 @@ public interface MenuService {
     void deleteById(int id);
     MenuDTO findByNom(String nom);
     List<MenuDTO> findByDateCreationAfter(Date date);
+    MenuDTO findCurrentMenu();
 }

@@ -22,6 +22,13 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientDTO save(ClientRequestDTO clientRequestDTO) {
+        // Vérifier d'abord si le client existe déjà avec ce numéro de téléphone
+        Client existingClient = clientRepository.findByTelephone(clientRequestDTO.getTelephone());
+        if (existingClient != null) {
+            return ClientMapper.toDTO(existingClient);
+        }
+
+        // Si le client n'existe pas, créer un nouveau
         Client client = ClientMapper.toEntity(clientRequestDTO);
         Client savedClient = clientRepository.save(client);
         return ClientMapper.toDTO(savedClient);
@@ -29,16 +36,29 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientDTO update(ClientDTO clientDTO) {
+        // Vérifier si le client existe
+        Client existingClient = clientRepository.findByTelephone(clientDTO.getTelephone());
+        if (existingClient == null) {
+            throw new RuntimeException("Client non trouvé avec le numéro: " + clientDTO.getTelephone());
+        }
+
         Client client = ClientMapper.toEntity(clientDTO);
+        client.setId(existingClient.getId()); // Assurer que l'ID est préservé
         Client updatedClient = clientRepository.save(client);
         return ClientMapper.toDTO(updatedClient);
+    }
+
+    @Override
+    public ClientDTO findByTelephone(String telephone) {
+        Client client = clientRepository.findByTelephone(telephone);
+        return client != null ? ClientMapper.toDTO(client) : null;
     }
 
     @Override
     public ClientDTO findById(int id) {
         return clientRepository.findById(id)
                 .map(ClientMapper::toDTO)
-                .orElseThrow(() -> new RuntimeException("Client non trouvé avec l'id: " + id));
+                .orElseThrow(() -> new RuntimeException("Client non trouvé avec l'ID: " + id));
     }
 
     @Override
@@ -51,11 +71,5 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void deleteById(int id) {
         clientRepository.deleteById(id);
-    }
-
-    @Override
-    public ClientDTO findByEmail(String email) {
-        Client client = clientRepository.findByEmail(email);
-        return ClientMapper.toDTO(client);
     }
 }

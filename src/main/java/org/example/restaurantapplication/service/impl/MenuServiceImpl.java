@@ -10,6 +10,7 @@ import org.example.restaurantapplication.service.MenuService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,22 +25,25 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public MenuDTO save(MenuRequestDTO menuRequestDTO) {
         Menu menu = MenuMapper.toEntity(menuRequestDTO);
-        Menu savedMenu = menuRepository.save(menu);
-        return MenuMapper.toDTO(savedMenu);
+        menu.setDateCreation(new Date());
+        return MenuMapper.toDTO(menuRepository.save(menu));
     }
 
     @Override
     public MenuDTO update(MenuDTO menuDTO) {
+        Menu existingMenu = menuRepository.findById(menuDTO.getId())
+                .orElseThrow(() -> new RuntimeException("Menu non trouvé avec l'ID: " + menuDTO.getId()));
+
         Menu menu = MenuMapper.toEntity(menuDTO);
-        Menu updatedMenu = menuRepository.save(menu);
-        return MenuMapper.toDTO(updatedMenu);
+        menu.setDateCreation(existingMenu.getDateCreation());
+        return MenuMapper.toDTO(menuRepository.save(menu));
     }
 
     @Override
     public MenuDTO findById(int id) {
         return menuRepository.findById(id)
                 .map(MenuMapper::toDTO)
-                .orElseThrow(() -> new RuntimeException("Menu non trouvé avec l'id: " + id));
+                .orElseThrow(() -> new RuntimeException("Menu non trouvé avec l'ID: " + id));
     }
 
     @Override
@@ -56,8 +60,9 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public MenuDTO findByNom(String nom) {
-        Menu menu = menuRepository.findByNom(nom);
-        return MenuMapper.toDTO(menu);
+        return menuRepository.findByNom(nom)
+                .map(MenuMapper::toDTO)
+                .orElseThrow(() -> new RuntimeException("Menu non trouvé avec le nom: " + nom));
     }
 
     @Override
@@ -65,5 +70,13 @@ public class MenuServiceImpl implements MenuService {
         return menuRepository.findByDateCreationAfter(date).stream()
                 .map(MenuMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public MenuDTO findCurrentMenu() {
+        return menuRepository.findAll().stream()
+                .max(Comparator.comparing(Menu::getDateCreation))
+                .map(MenuMapper::toDTO)
+                .orElseThrow(() -> new RuntimeException("Aucun menu actif trouvé"));
     }
 }

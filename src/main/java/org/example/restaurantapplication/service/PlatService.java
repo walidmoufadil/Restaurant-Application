@@ -10,7 +10,7 @@ public interface PlatService {
     PlatDTO findById(int id);
     List<PlatDTO> findAll();
     void deleteById(int id);
-    List<PlatDTO> findByMenuId(Integer menuId);
-    List<PlatDTO> findByDisponibilite(boolean disponibilite);
-    PlatDTO findByNom(String nom);
+    public List<PlatDTO> findByDisponibilite(boolean disponibilite);
+    public PlatDTO findByNom(String nom);
+    public List<PlatDTO> findByMenuId(Integer menuId);
 }

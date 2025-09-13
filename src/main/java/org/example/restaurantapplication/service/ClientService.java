@@ -10,5 +10,5 @@ public interface ClientService {
     ClientDTO findById(int id);
     List<ClientDTO> findAll();
     void deleteById(int id);
-    ClientDTO findByEmail(String email);
+    ClientDTO findByTelephone(String telephone);
 }
