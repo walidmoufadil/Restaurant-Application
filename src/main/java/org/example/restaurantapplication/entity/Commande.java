@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
-@ToString(exclude = {"lignesCommande"})
+@ToString(of = {"id", "dateCommande", "statut"})
 public class Commande {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +25,7 @@ public class Commande {
     @Enumerated(EnumType.STRING)
     private StatutCommande statut;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id")
     private Client client;
 

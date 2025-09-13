@@ -20,11 +20,11 @@ public class LigneCommande {
     @Column(nullable = false)
     private int quantite;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "commande_id")
     private Commande commande;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "plat_id")
     private Plat plat;
 }

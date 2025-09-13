@@ -18,9 +18,10 @@ public class Client {
     @Column(nullable = false)
     private String nom;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String email;
 
+    @Column(nullable = false, unique = true)
     private String telephone;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)

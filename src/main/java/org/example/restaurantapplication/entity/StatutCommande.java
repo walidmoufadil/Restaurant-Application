@@ -6,9 +6,11 @@ import lombok.*;
 @ToString
 @Getter
 public enum StatutCommande {
+    EN_ATTENTE("En attente"),
     EN_COURS("En cours"),
     PREPAREE("Préparée"),
-    LIVREE("Livrée");
+    LIVREE("Livrée"),
+    ANNULEE("Annulée");
 
     private final String libelle;
 }
