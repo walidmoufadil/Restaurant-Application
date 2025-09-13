@@ -3,6 +3,7 @@ package org.example.restaurantapplication.dto;
 import lombok.*;
 import org.example.restaurantapplication.entity.StatutCommande;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -11,5 +12,6 @@ import java.util.Date;
 public class CommandeRequestDTO {
     private Date dateCommande;
     private StatutCommande statut;
-    private int clientId;
+    private String telephone;  // Changement de clientId vers telephone
+    private List<LigneCommandeRequestDTO> lignesCommande;  // Ajout des lignes de commande
 }
