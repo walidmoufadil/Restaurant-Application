@@ -9,4 +9,5 @@ import java.util.List;
 public interface CommandeRepository extends JpaRepository<Commande, Integer> {
     List<Commande> findByClientId(Integer clientId);
     List<Commande> findByStatut(StatutCommande statut);
+    List<Commande> findByStatutNotIn(List<StatutCommande> statuts);
 }
