@@ -1,9 +1,8 @@
 package org.example.restaurantapplication;
 
 import org.example.restaurantapplication.dto.*;
-import org.example.restaurantapplication.entity.StatutCommande;
 import org.example.restaurantapplication.service.*;
-import org.example.restaurantapplication.tools.*;
+import org.example.restaurantapplication.mcp.*;
 import org.springframework.ai.tool.method.MethodToolCallbackProvider;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -147,8 +146,8 @@ public class RestaurantApplication {
 
             // Création d'un client
             ClientRequestDTO clientRequest2 = ClientRequestDTO.builder()
-                    .nom("Mohammed")
-                    .telephone("0600000000")
+                    .nom("Walid")
+                    .telephone("212716215372")
                     .build();
             ClientDTO client = clientService.save(clientRequest2);
             System.out.println("Client créé: " + client);

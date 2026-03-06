@@ -1,4 +1,4 @@
-package org.example.restaurantapplication.tools;
+package org.example.restaurantapplication.mcp;
 
 import lombok.RequiredArgsConstructor;
 import org.example.restaurantapplication.dto.ClientDTO;

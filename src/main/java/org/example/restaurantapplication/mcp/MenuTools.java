@@ -1,8 +1,7 @@
-package org.example.restaurantapplication.tools;
+package org.example.restaurantapplication.mcp;
 
 import lombok.RequiredArgsConstructor;
 import org.example.restaurantapplication.dto.MenuDTO;
-import org.example.restaurantapplication.dto.MenuRequestDTO;
 import org.example.restaurantapplication.service.MenuService;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.stereotype.Component;

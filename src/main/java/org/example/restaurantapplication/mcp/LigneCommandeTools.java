@@ -1,4 +1,4 @@
-package org.example.restaurantapplication.tools;
+package org.example.restaurantapplication.mcp;
 
 import lombok.RequiredArgsConstructor;
 import org.example.restaurantapplication.dto.LigneCommandeDTO;
@@ -47,10 +47,10 @@ public class LigneCommandeTools {
         return ligneCommandeService.findAll();
     }
 
-//    @Tool(
-//            name = "deleteLigneCommande",
-//            description = "Supprime une ligne de commande. Paramètre: {id: number}. Ne retourne rien. Lance une exception si la ligne n'existe pas ou si la commande n'est plus en statut EN_ATTENTE"
-//    )
+    @Tool(
+            name = "deleteLigneCommande",
+            description = "Supprime une ligne de commande. Paramètre: {id: number}. Ne retourne rien. Lance une exception si la ligne n'existe pas ou si la commande n'est plus en statut EN_ATTENTE"
+    )
     public void deleteLigneCommande(int id) {
         ligneCommandeService.deleteById(id);
     }

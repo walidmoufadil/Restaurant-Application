@@ -1,4 +1,4 @@
-package org.example.restaurantapplication.tools;
+package org.example.restaurantapplication.mcp;
 
 import lombok.RequiredArgsConstructor;
 import org.example.restaurantapplication.dto.CommandeDTO;
@@ -25,9 +25,18 @@ public class CommandeTools {
   Les champs 'dateCommande' et 'statut' sont gérés automatiquement.
 
   Exemple d'input JSON :
-  {
-    "telephone": "0601020304"
-  }
+                    "commandeRequestDTO": {
+                          "dateCommande": "2023-10-20T14:00:00Z",
+                          "lignesCommande": [
+                            {
+                              "commandeId": 0,
+                              "platId": 8,
+                              "quantite": 1
+                            }
+                          ],
+                          "statut": "EN_ATTENTE",
+                          "telephone": "212716215372"
+                        }
   """
     )
     public CommandeDTO createCommande(CommandeRequestDTO commandeRequestDTO) {

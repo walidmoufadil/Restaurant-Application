@@ -1,8 +1,7 @@
-package org.example.restaurantapplication.tools;
+package org.example.restaurantapplication.mcp;
 
 import lombok.RequiredArgsConstructor;
 import org.example.restaurantapplication.dto.PlatDTO;
-import org.example.restaurantapplication.dto.PlatRequestDTO;
 import org.example.restaurantapplication.service.PlatService;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.stereotype.Component;

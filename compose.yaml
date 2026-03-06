@@ -1,23 +1,116 @@
 version: '3.8'
-
 services:
   mysql:
-    image: mysql:8.0
-    container_name: mysql-restaurant
-    restart: always
+    image: mysql:8.0.35
+    container_name: mysql_restaurant
     environment:
-      MYSQL_ROOT_PASSWORD: walid123
       MYSQL_DATABASE: RestaurantDB
+      MYSQL_ROOT_PASSWORD: walid123
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
-      - spring-network
+      - restaurant_network
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    networks:
+      - restaurant_network
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "commande-status-changes:1:1"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - zookeeper
+    networks:
+      - restaurant_network
+
+  n8n:
+    image: n8nio/n8n
+    container_name: n8n8
+    ports:
+      - "5678:5678"
+    environment:
+      - WEBHOOK_URL=https://a41dc57d1f05.ngrok-free.app
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      - restaurant-app
+    networks:
+      - restaurant_network
+
+  restaurant-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+#    image: restaurant-application-restaurant-app:latest
+    container_name: restaurant-app
+    ports:
+      - "9090:9090"
+    environment:
+      - SERVER_PORT=9090
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/RestaurantDB?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=walid123
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - APP_CORS_ALLOWED_ORIGINS=http://localhost:8085
+      - SERVER_PORT=8080
+    depends_on:
+      - mysql
+      - kafka
+    networks:
+      - restaurant_network
+
+  restaurant-ui:
+    build:
+      context: ./Client-Angular
+      dockerfile: Dockerfile
+#    image: restaurant-application-restaurant-ui:latest
+    container_name: restaurant-ui
+    ports:
+      - '8085:80'
+    depends_on:
+      - restaurant-app
+    networks:
+      - restaurant_network
+
+  mcp-client:
+#    build:
+#      context: ./mcp-client
+#      dockerfile: Dockerfile
+    image: restaurant-application-mcp-client:latest
+    container_name: mcp-client
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/RestaurantDB?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=walid123
+    depends_on:
+      - mysql
+      - restaurant-app
+    networks:
+      - restaurant_network
 
 volumes:
   mysql_data:
-
+  n8n_data:
 networks:
-  spring-network:
+  restaurant_network:
     driver: bridge

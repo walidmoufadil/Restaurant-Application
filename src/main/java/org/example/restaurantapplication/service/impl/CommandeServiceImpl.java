@@ -3,12 +3,14 @@ package org.example.restaurantapplication.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.example.restaurantapplication.dto.CommandeDTO;
 import org.example.restaurantapplication.dto.CommandeRequestDTO;
+import org.example.restaurantapplication.dto.CommandeStatusEventDTO;
 import org.example.restaurantapplication.entity.Client;
 import org.example.restaurantapplication.entity.Commande;
 import org.example.restaurantapplication.entity.StatutCommande;
 import org.example.restaurantapplication.mapper.CommandeMapper;
 import org.example.restaurantapplication.repository.ClientRepository;
 import org.example.restaurantapplication.repository.CommandeRepository;
+import org.example.restaurantapplication.service.CommandeEventPublisher;
 import org.example.restaurantapplication.service.CommandeService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,7 @@ public class CommandeServiceImpl implements CommandeService {
     private final CommandeRepository commandeRepository;
     private final ClientRepository clientRepository;
     private final CommandeMapper commandeMapper;
+    private final CommandeEventPublisher eventPublisher;
 
     @Override
     public CommandeDTO save(CommandeRequestDTO commandeRequestDTO) {
@@ -60,7 +63,16 @@ public class CommandeServiceImpl implements CommandeService {
                 .orElseThrow(() -> new RuntimeException("Commande non trouvée avec l'ID: " + commandeId));
 
         commande.setStatut(statut);
-        return commandeMapper.toDTO(commandeRepository.save(commande));
+        Commande savedCommande = commandeRepository.save(commande);
+
+        // Publier l'événement de changement de statut
+        eventPublisher.publierChangementStatus(CommandeStatusEventDTO.builder()
+                .commandeId(commandeId)
+                .nouveauStatut(statut)
+                .telephone(commande.getClient().getTelephone())
+                .build());
+
+        return commandeMapper.toDTO(savedCommande);
     }
 
     @Override
