@@ -1,0 +1,72 @@
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-8">Liste des Commandes</h1>
+
+    <!-- Loading indicator -->
+    <div *ngIf="loading" class="flex justify-center items-center py-8">
+        <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
+        <span class="ml-3 text-gray-600">Chargement des commandes...</span>
+    </div>
+
+    <!-- Error message -->
+    <div *ngIf="error" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6">
+        <p>{{error}}</p>
+    </div>
+
+    <!-- No commands message -->
+    <div *ngIf="!loading && !error && commandes.length === 0" class="text-center py-8 text-gray-600">
+        Aucune commande à afficher
+    </div>
+
+    <!-- Commands list -->
+    <div class="grid gap-6" *ngIf="!loading && !error && commandes.length > 0">
+        <div *ngFor="let commande of commandes"
+             class="bg-white rounded-lg shadow-lg p-6 transition-all hover:shadow-xl">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold text-indigo-600">
+                    Commande #{{commande.id}}
+                    <span class="ml-2 text-sm text-gray-500">{{commande.telephone}}</span>
+                </h2>
+                <div class="flex items-center space-x-4">
+                    <select
+                        [value]="commande.statut"
+                        (change)="updateStatut(commande.id, $event)"
+                        class="form-select rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+                        <option value="EN_ATTENTE">En attente</option>
+                        <option value="EN_COURS">En cours</option>
+                        <option value="PREPAREE">Préparée</option>
+                        <option value="LIVREE">Livrée</option>
+                        <option value="ANNULEE">Annulée</option>
+                    </select>
+                    <span [class]="getStatusColor(commande.statut)" class="px-3 py-1 rounded-full text-sm font-medium">
+                        {{commande.statut}}
+                    </span>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="text-gray-600">
+                    <i class="far fa-calendar-alt mr-2"></i>
+                    {{commande.dateCommande | date:'dd/MM/yyyy HH:mm'}}
+                </div>
+
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">Plats commandés:</h3>
+                    <ul class="space-y-2">
+                        <li *ngFor="let ligne of commande.lignesCommande"
+                            class="flex justify-between items-center p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                            <span class="text-gray-800">
+                                {{ligne.plat?.nom || 'Chargement...'}}
+                                <span class="text-gray-500 text-sm ml-2">
+                                    x{{ligne.quantite}}
+                                </span>
+                            </span>
+                            <span class="text-gray-600">
+                                {{(ligne.plat?.prix || 0) * ligne.quantite | currency:'EUR'}}
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

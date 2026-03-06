@@ -1,0 +1,94 @@
+<div class="flex h-screen bg-amber-50">
+    <!-- Sidebar pour les filtres -->
+    <div class="w-64 bg-white shadow-lg p-4 space-y-6 border-r border-amber-200">
+        <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-orange-700">Filtres</h3>
+
+            <!-- Période -->
+            <div>
+                <label class="block text-sm font-medium text-orange-600 mb-2">Période</label>
+                <select [(ngModel)]="filters.period"
+                        (change)="updateFilter('period', filters.period)"
+                        class="w-full p-2 border border-amber-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-amber-50">
+                    <option *ngFor="let period of periods" [value]="period.value">
+                        {{period.label}}
+                    </option>
+                </select>
+            </div>
+
+            <!-- Catégorie -->
+            <div>
+                <label class="block text-sm font-medium text-orange-600 mb-2">Catégorie</label>
+                <select [(ngModel)]="filters.category"
+                        (change)="updateFilter('category', filters.category)"
+                        class="w-full p-2 border border-amber-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-amber-50">
+                    <option *ngFor="let category of categories" [value]="category.value">
+                        {{category.label}}
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Zone principale du chat -->
+    <div class="flex-1 flex flex-col">
+        <!-- En-tête -->
+        <div class="bg-white shadow-sm p-4 border-b border-amber-200">
+            <h1 class="text-2xl font-bold text-orange-700">Assistant Restaurant 🍽️</h1>
+            <p class="text-sm text-orange-600">Analysez vos données restaurant en temps réel</p>
+        </div>
+
+        <!-- Zone des suggestions rapides -->
+        <div class="p-4 bg-amber-50 border-b border-amber-200">
+            <div class="flex flex-wrap gap-2">
+                <button *ngFor="let suggestion of quickSuggestions"
+                        (click)="useSuggestion(suggestion)"
+                        class="px-4 py-2 bg-white rounded-full text-sm font-medium text-orange-700 hover:bg-orange-100 hover:text-orange-800 transition-colors duration-200 shadow-sm border border-amber-200">
+                    {{suggestion}}
+                </button>
+            </div>
+        </div>
+
+        <!-- Zone des messages -->
+        <div class="flex-1 overflow-y-auto p-4 space-y-4 bg-amber-50">
+            <div *ngFor="let message of messages"
+                 [ngClass]="{'flex justify-end': message.isUser, 'flex justify-start': !message.isUser}">
+                <div [ngClass]="{
+                    'bg-orange-600 text-white': message.isUser,
+                    'bg-white text-orange-800 border border-amber-200': !message.isUser
+                }" class="max-w-[75%] rounded-lg p-3 shadow-sm">
+                    <div *ngIf="!message.isUser" class="flex items-center space-x-2 mb-1">
+                        <span class="text-xs font-medium text-orange-600">Assistant</span>
+                    </div>
+                    {{ message.content }}
+                </div>
+            </div>
+
+            <!-- Indicateur de chargement -->
+            <div *ngIf="isLoading" class="flex justify-start">
+                <div class="bg-white rounded-lg p-3 shadow-sm animate-pulse flex items-center space-x-2 border border-amber-200">
+                    <div class="w-2 h-2 bg-orange-400 rounded-full animate-bounce"></div>
+                    <div class="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                    <div class="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zone de saisie -->
+        <div class="bg-white p-4 shadow-lg border-t border-amber-200">
+            <form (ngSubmit)="sendMessage()" class="flex gap-2">
+                <input type="text"
+                       [(ngModel)]="userMessage"
+                       name="message"
+                       placeholder="Posez votre question..."
+                       class="flex-1 p-3 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 bg-amber-50 placeholder-orange-400"
+                       [disabled]="isLoading">
+                <button type="submit"
+                        [disabled]="!userMessage.trim() || isLoading"
+                        class="bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 font-medium">
+                    Envoyer
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

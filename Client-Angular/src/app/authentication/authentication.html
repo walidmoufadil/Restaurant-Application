@@ -1,0 +1,41 @@
+<div class="auth-container">
+  <div class="background-animation"></div>
+  <div class="login-card">
+    <div class="icon-container">
+      <img src="../../assets/restaurant-icon2.svg" alt="Restaurant Icon" class="restaurant-icon">
+    </div>
+    <h2 class="welcome-text">Bienvenue</h2>
+    <p class="subtitle">Connectez-vous à votre compte</p>
+
+    <form class="login-form" (ngSubmit)="onSubmit()">
+      <div class="input-group">
+        <div class="input-container">
+          <input id="username"
+                 name="username"
+                 type="text"
+                 required
+                 [(ngModel)]="username"
+                 placeholder="Nom d'utilisateur">
+        </div>
+        <div class="input-container">
+          <input id="password"
+                 name="password"
+                 type="password"
+                 required
+                 [(ngModel)]="password"
+                 placeholder="Mot de passe">
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="loading" class="login-button">
+        <span class="button-content">
+          {{ loading ? 'Connexion en cours...' : 'Se connecter' }}
+        </span>
+      </button>
+
+      <div *ngIf="error" class="error-message">
+        {{ error }}
+      </div>
+    </form>
+  </div>
+</div>
